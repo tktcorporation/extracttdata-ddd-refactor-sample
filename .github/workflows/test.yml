@@ -1,0 +1,32 @@
+name: Test
+
+on: pull_request
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # - name: Checkout submodules
+      #   run: |
+      #     git config --global url."https://github.com/".insteadOf "git@github.com:"
+      #     git submodule sync --recursive
+      #     git -c "http.extraheader=Authorization: basic ${GITHUB_ACCESS_TOKEN}" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+
+      # - name: Set up
+      #   run: |
+      #     touch db/migration/ReceoneDbMigration/ReceoneDbMigration/migration/up/00000000_.sql
+      #     printf "create role receone with login password 'password';%s\nCREATE SCHEMA receone AUTHORIZATION receone;" > db/migration/ReceoneDbMigration/ReceoneDbMigration/migration/up/00000000_.sql
+
+      - name: Build containers
+        run: docker-compose build
+
+      - name: Up a db container
+        run: docker-compose up -d
+
+      - name: Test
+        run: docker-compose run --rm app "yarn && yarn test"
