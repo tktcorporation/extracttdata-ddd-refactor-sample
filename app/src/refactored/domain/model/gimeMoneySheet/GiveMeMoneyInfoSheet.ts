@@ -3,6 +3,7 @@ import { SlackModule } from '../../../../module/slackModule/SlackModule';
 import { GiveMeMoneyInfo } from './GiveMeMoneyInfo/GiveMeMoneyInfo';
 import { Status } from './GiveMeMoneyInfo/Status';
 import { Sheet } from 'src/module/spreadSheetApp/Sheet';
+import { SheetValue } from '../../type/SheetValue';
 
 enum ColumnNumberMapping {
     id = 2,
