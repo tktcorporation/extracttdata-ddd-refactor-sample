@@ -13,8 +13,22 @@ jobs:
 
       - name: Cache node modules
         uses: actions/cache@v2
+        id: cache-node-modules
         env:
           cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ./app/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Cache npm
+        uses: actions/cache@v2
+        id: cache-npm
+        env:
+          cache-name: cache-npm
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -23,6 +37,11 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: cache check
+        run: |
+          echo "node-modules -->${{steps.cache-node-modules.outputs.cache-hit}}<--"
+          echo "npm -->${{steps.cache-npm.outputs.cache-hit}}<--"
+
       - name: Build containers
         run: docker-compose build
 
