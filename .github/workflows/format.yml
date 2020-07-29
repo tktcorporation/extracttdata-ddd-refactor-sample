@@ -1,10 +1,10 @@
-name: Test
+name: Format
 
 on: pull_request
 
 jobs:
-  test:
-    name: Test
+  format:
+    name: Format
     runs-on: ubuntu-latest
 
     steps:
@@ -23,15 +23,11 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
       - name: Build containers
         run: docker-compose build
-
-      - name: Up a db container
-        run: docker-compose up -d
 
       - name: Install
         run: docker-compose run --rm app /bin/bash -c "yarn"
 
-      - name: Test
-        run: docker-compose run --rm app /bin/bash -c "yarn test"
+      - name: Format
+        run: docker-compose run --rm app /bin/bash -c "yarn format:check"
